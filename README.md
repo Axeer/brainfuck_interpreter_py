@@ -1,3 +1,3 @@
 # Brainfuck Interpreter on python
 Usage: 
-    python interpreter.py %script.bf%
+        python interpreter.py %script.bf%
