@@ -26,9 +26,9 @@ class Loop:
     end_pos = None
     #TODO if on end loop enter_ptr == outer_ptr: eto infinity loop
 
-def exit():
+def exit(code = 0):
     running = False
-    sys.exit()
+    sys.exit(code)
 
 
 def execute(file):
@@ -138,7 +138,7 @@ def execute(file):
             pass
 
     running = False
-    exit()
+    return memory
 
 
 def build_bracemap(code):
@@ -164,4 +164,4 @@ if __name__ == '__main__':
         print(Message.nonepath)
         exit()
     if bffile is not None:
-        execute(bffile)
+        exit(execute(bffile))

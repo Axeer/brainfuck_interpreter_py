@@ -11,6 +11,6 @@
 ------.
 --------.
 -------------------------------------------------------------------.
-[ (>) + (<) - ] !move value to n cells!
+[ (>) + (<) - ] !move current cell to > cells!
 !#<>[]+-,.! commented code(does nothing)
 # debug info
