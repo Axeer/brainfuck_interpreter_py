@@ -5,7 +5,7 @@ stop = False
 running = False
 
 max_time_secs = 5 # funnyword alert!
-
+suspend_on_debug = False
 
 class Message:
     infinityloop = 'falling into infinity loop'
@@ -13,9 +13,12 @@ class Message:
 
 
 class Keywords:
-    keywords = '-+><[],.#'
     debug = '#'
-    comment = '!' #TODO
+    comment = '!'
+    keywords = None
+    def __init__(self):
+        self.keywords = '-+><[],.{}{}'.format(Keywords.debug, Keywords.comment)
+kw = Keywords()
 
 class Loop:
     enter_ptr = None
@@ -36,9 +39,9 @@ def execute(file):
     running = True
     ignore = False
 
-    with open(file, encoding='ascii') as program:
+    with open(file) as program:
         program_content = program.read()
-        program_content = [ i for i in program_content if i in Keywords.keywords]
+        program_content = [i for i in program_content if i in kw.keywords]
 
     position = 0
     pointer = 0
@@ -56,19 +59,24 @@ def execute(file):
             for memcell in memory:
                 print(f"{curmem:5} {'->'} {memcell:5}")
                 curmem += 1
-            print(f"cur ptr: {pointer} (value: {memory[pointer]})")
-            print(f"cur pos: {position}(instruction {program_content[position-1]})")
-            input("enter any key to continue executing...")
+            print(f"cur ptr: {pointer} (value: {memory[pointer]} char: '{chr(memory[pointer])}')")
+            print(f"cur pos: {position}(instruction: {program_content[position-1]})")
+            if suspend_on_debug: input("enter any key to continue executing...")
+
     time_start = time.time()
 
     def match(sym):
-        return program_content[position] == sym
+        return program_content[position] == sym and not ignore or program_content[position] == kw.comment
 
     def out():
         print(chr(memory[pointer]), end="")
 
     while position < len(program_content):
-        if match(">"):
+
+        if match(kw.comment):
+            ignore = not ignore
+
+        elif match(">"):
             pointer += 1
             if len(memory) <= pointer:
                 memory.append(0)
@@ -117,7 +125,7 @@ def execute(file):
                 print("Key Error")
                 exit()
 
-        elif match(Keywords.debug):
+        elif match(kw.debug):
             Debug.out()
 
         if stop:
